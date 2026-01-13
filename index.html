@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="facebook-domain-verification" content="1z4kz4bcpqa115r65y05hwnxb0x6k7" />
+    <title>Thiệp Mời Sinh Nhật</title>
+    <meta property="og:title" content="Anh chị em có 1 lời nhắn từ Bảo Chi 💌">
+    <meta property="og:image" content="https://hidoneko.github.io/chi-birthday-2/bia.png?v=2">
+    <meta property="og:image:alt" content="Thiệp mời sinh nhật">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="Chạm để mở thiệp mời sinh nhật!">
+    <meta property="og:url" content="https://hidoneko.github.io/chi-birthday-2/">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff9a9e;
+            --secondary-color: #fecfef;
+            --envelope-color: #ffecd2;
+            --envelope-shadow: rgba(0, 0, 0, 0.1);
+            --card-text-color: #555;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fff9fc 0%, #ffeef2 100%);
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            perspective: 1500px;
+            cursor: pointer;
+            z-index: 10;
+            /* Ensure on top of background video */
+        }
+
+        /* Instruction text */
+        .instruction {
+            position: absolute;
+            bottom: -60px;
+            width: 100%;
+            text-align: center;
+            color: #888;
+            font-size: 1.1rem;
+            opacity: 0.8;
+            transition: opacity 0.5s;
+            animation: bounce 2s infinite;
+        }
+
+        .container:hover .instruction {
+            opacity: 1;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Envelope Structure - Vertical 3:4 Ratio */
+        .envelope {
+            width: 300px;
+            height: 400px;
+            position: relative;
+            background-color: var(--envelope-color);
+            box-shadow: 0 15px 35px var(--envelope-shadow);
+            border-radius: 10px;
+            z-index: 10;
+            transition: transform 0.6s ease;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .envelope:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Flap (Top triangle) */
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffc2d1;
+            clip-path: polygon(0 0, 100% 0, 50% 50%);
+            /* V-shape flap */
+            transform-origin: top;
+            transform: translateZ(20px);
+            transition: transform 0.6s 0.4s ease-in-out, z-index 0.2s 0.4s;
+            z-index: 30;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+        }
+
+        /* Pocket (The body of the envelope covering the card) */
+        .pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff0f5;
+            /* Deep V-neck to reveal card */
+            clip-path: polygon(0 0, 50% 45%, 100% 0, 100% 100%, 0 100%);
+            z-index: 20;
+            border-radius: 0 0 10px 10px;
+            transform: translateZ(10px);
+        }
+
+        /* Side borders illusion (optional) */
+        .pocket-sides {
+            display: none;
+        }
+
+        /* The Letter / Card - 3:4 Ratio */
+        .card {
+            position: absolute;
+            bottom: 20px;
+            /* Peek out slightly */
+            left: 50%;
+            transform: translateX(-50%) translateZ(0);
+            width: 270px;
+            height: 360px;
+            /* 3:4 Ratio (270 * 1.33 = 360) */
+            background: transparent;
+            border-radius: 5px;
+            /* Animation handles transition */
+            z-index: 5;
+            transform-style: preserve-3d;
+            box-shadow: none;
+            will-change: transform;
+        }
+
+        .card-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 5px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background-color: #fff;
+            background-image: url('photo.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 2;
+        }
+
+        .card-back {
+            background: #fff;
+            transform: rotateY(180deg);
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            background-image: url('card-bg.png');
+            background-size: cover;
+        }
+
+        .card.flipped {
+            /* Handled by inner */
+        }
+
+        /* New structure styles */
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-content {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            width: 90%;
+            height: 98%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .card h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #ff6b6b;
+            margin: 0;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.81rem;
+            color: var(--card-text-color);
+            margin: 5px 0;
+            line-height: 1.7;
+            white-space: wrap;
+        }
+
+        .card .highlight {
+            font-weight: bold;
+            color: #d66;
+        }
+
+        /* Open State */
+        .container.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+            transition: transform 0.6s ease-in-out, z-index 0s 0.3s;
+        }
+
+        .container.open .card {
+            animation: slideOut 1.5s forwards ease-in-out;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes slideOut {
+            0% {
+                transform: translateX(-50%) translateY(0) scale(1) translateZ(0);
+                z-index: 5;
+            }
+
+            40% {
+                /* Pull up high enough to clear 400px envelope */
+                transform: translateX(-50%) translateY(-480px) scale(0.9) translateZ(0);
+                z-index: 5;
+            }
+
+            41% {
+                z-index: 25;
+            }
+
+            100% {
+                transform: translateX(-50%) translateY(-100px) scale(1.1) translateZ(200px);
+                z-index: 25;
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateX(-50%) translateY(-100px) scale(1.1) translateZ(200px);
+                z-index: 25;
+            }
+
+            40% {
+                transform: translateX(-50%) translateY(-480px) scale(0.9) translateZ(0);
+                z-index: 25;
+            }
+
+            41% {
+                z-index: 5;
+            }
+
+            100% {
+                transform: translateX(-50%) translateY(0) scale(1) translateZ(0);
+                z-index: 5;
+            }
+        }
+
+        .container.close .card {
+            animation: slideIn 3s forwards ease-in-out;
+        }
+
+        .container.close .flap {
+            transition-delay: 2.8s;
+        }
+
+        /* Flip Hint Text */
+        .flip-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 900;
+            text-shadow: 0 2px 4px rgba(255, 121, 121, 1.5);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            transition-delay: 0s;
+        }
+
+        /* Customize hint for back side if needed */
+        .card-back .flip-hint {
+            color: rgba(255, 121, 121, 0.5);
+            /* Darker text for white background */
+            text-shadow: none;
+        }
+
+        /* Show front hint only when open and NOT flipped */
+        .container.open .card:not(.flipped) .card-front .flip-hint {
+            opacity: 1;
+            transition-delay: 1.5s;
+            /* Wait for slideOut animation */
+            animation: pulseHint 2s infinite 2s;
+        }
+
+        /* Show back hint only when open and flipped */
+        .container.open .card.flipped .card-back .flip-hint {
+            opacity: 1;
+            transition-delay: 1s;
+            /* Short delay after flip */
+            animation: pulseHint 2s infinite 1s;
+        }
+
+        /* Hide hints when state changes */
+        .card.flipped .card-front .flip-hint,
+        .card:not(.flipped) .card-back .flip-hint {
+            opacity: 0;
+            transition-delay: 0s;
+        }
+
+        @keyframes pulseHint {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.7;
+            }
+        }
+
+        /* Mobile specific animations */
+        @keyframes slideOutMobile {
+            0% {
+                transform: translateX(-50%) translateY(0) scale(1) translateZ(0);
+                z-index: 5;
+            }
+
+            40% {
+                /* Pull up just enough to clear */
+                transform: translateX(-50%) translateY(-300px) scale(0.9) translateZ(0);
+                z-index: 5;
+            }
+
+            41% {
+                z-index: 25;
+            }
+
+            100% {
+                /* Postion relative to the LOWERED envelope */
+                /* Envelope is at +180px, so -250px here puts card at -70px screen center */
+                transform: translateX(-50%) translateY(-250px) scale(1.5) translateZ(200px);
+                z-index: 25;
+            }
+        }
+
+        @keyframes slideInMobile {
+            0% {
+                transform: translateX(-50%) translateY(-250px) scale(1.5) translateZ(200px);
+                z-index: 25;
+            }
+
+            40% {
+                transform: translateX(-50%) translateY(-300px) scale(0.9) translateZ(0);
+                z-index: 25;
+            }
+
+            41% {
+                z-index: 5;
+            }
+
+            100% {
+                transform: translateX(-50%) translateY(0) scale(1) translateZ(0);
+                z-index: 5;
+            }
+        }
+
+        /* Mobile adjustment */
+        @media (max-width: 480px) {
+            .envelope {
+                /* Scale down significantly properly on mobile */
+                transform: scale(0.65);
+                transform-origin: center center;
+                transition: transform 0.6s ease;
+            }
+
+            .container.open .envelope {
+                /* Move envelope down so card can be centered above it */
+                transform: translateY(180px) scale(0.65);
+            }
+
+            .container.open .card {
+                animation-name: slideOutMobile;
+            }
+
+            .container.close .card {
+                animation-name: slideInMobile;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" id="envelopeContainer">
+        <div class="envelope">
+            <div class="flap"></div>
+            <div class="pocket"></div>
+            <div class="pocket-sides"></div>
+
+            <div class="card">
+                <div class="card-inner">
+                    <!-- Front Side: Photo -->
+                    <div class="card-face card-front">
+                        <div class="flip-hint">Chạm để lật</div>
+                    </div>
+
+                    <!-- Back Side: Text -->
+                    <div class="card-face card-back">
+                        <div class="card-content">
+                            <h1>Mời Sinh Nhật</h1>
+                            <p>Thân mời anh chị em!</p>
+                            <p class="highlight">Thời gian: 18:00, Chủ Nhật ngày 18 tháng 1 năm 2026</p>
+                            <p>Tại nhà hàng Gia Viên</p>
+                            <p class="highlight">Địa chỉ: 2B Phố Bạch Đằng,<br>Quận Hồng Bàng </p>
+                            <p>Mong mọi người đến chung vui ạ!</p>
+                        </div>
+                        <div class="flip-hint">Chạm để lật</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="instruction">Chạm để mở thiệp</div>
+    </div>
+
+    <video id="bgVideo" loop playsinline webkit-playsinline
+        style="position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; opacity: 0; transition: opacity 1s; object-fit: cover;">
+        <source src="khmsn.mp4" type="video/mp4">
+    </video>
+
+    <script>
+        const container = document.getElementById('envelopeContainer');
+        const video = document.getElementById('bgVideo');
+
+        container.addEventListener('click', () => {
+            if (container.classList.contains('open')) {
+                container.classList.remove('open');
+                container.classList.add('close');
+
+                // Pause video and fade out
+                video.style.opacity = '0';
+                setTimeout(() => video.pause(), 1000); // Pause after fade out
+
+                // Reset card to default state
+                document.querySelector('.card').classList.remove('flipped');
+            } else {
+                container.classList.remove('close');
+                container.classList.add('open');
+
+                // Reset flip state
+                document.querySelector('.card').classList.remove('flipped');
+
+                // Play video and fade in
+                video.currentTime = 0;
+                video.volume = 0.2; // Note: iOS ignores this and uses hardware volume
+                video.muted = false;
+
+                var promise = video.play();
+                if (promise !== undefined) {
+                    promise.then(_ => {
+                        // playback started
+                        video.volume = 0.2; // Try setting again after start
+                    }).catch(error => {
+                        console.log("Auto-play was prevented:", error);
+                    });
+                }
+                video.style.opacity = '1';
+            }
+
+            const instruction = document.querySelector('.instruction');
+            if (container.classList.contains('open')) {
+                instruction.style.opacity = '0';
+                instruction.style.pointerEvents = 'none';
+
+                // Add some basic confetti effect (optional polish)
+                createConfetti();
+            } else {
+                instruction.style.opacity = '0.8';
+            }
+        });
+
+        // Card Flip Logic
+        const card = document.querySelector('.card');
+        card.addEventListener('click', (e) => {
+            // Only allow flip if envelope is open
+            if (container.classList.contains('open')) {
+                e.stopPropagation(); // Prevent envelope from closing
+                card.classList.toggle('flipped');
+            }
+        });
+
+        function createConfetti() {
+            // Simple confetti burst
+            const colors = ['#ff9a9e', '#fecfef', '#a18cd1', '#fbc2eb'];
+            for (let i = 0; i < 30; i++) {
+                const conf = document.createElement('div');
+                conf.style.position = 'fixed';
+                conf.style.left = '50%';
+                conf.style.top = '50%';
+                conf.style.width = '8px';
+                conf.style.height = '8px';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.borderRadius = '50%';
+                conf.style.zIndex = '100';
+                conf.style.pointerEvents = 'none';
+                document.body.appendChild(conf);
+
+                // Random direction
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 2 + Math.random() * 5;
+                const tx = Math.cos(angle) * velocity * 50;
+                const ty = Math.sin(angle) * velocity * 50;
+
+                const anim = conf.animate([
+                    { transform: 'translate(0,0) scale(1)', opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000 + Math.random() * 500,
+                    easing: 'cubic-bezier(0, .9, .57, 1)'
+                });
+
+                anim.onfinish = () => conf.remove();
+            }
+        }
+    </script>
+</body>
+
+</html>
