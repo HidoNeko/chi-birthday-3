@@ -472,23 +472,29 @@
         <div class="instruction">Chạm để mở thiệp</div>
     </div>
 
-    <video id="bgVideo" loop playsinline webkit-playsinline
-        style="position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -1; opacity: 0; transition: opacity 1s; object-fit: cover;">
-        <source src="khmsn.mp4" type="video/mp4">
-    </video>
+
+    <audio id="bgMusic" loop src="music.mp3" preload="auto"></audio>
+
+    <div id="bgImage"
+        style="position: fixed; right: 0; bottom: 0; width: 100%; height: 100%; z-index: -1; opacity: 0; transition: opacity 1.5s; background-image: url('bg2.jpg'); background-size: cover; background-position: center;">
+    </div>
 
     <script>
         const container = document.getElementById('envelopeContainer');
-        const video = document.getElementById('bgVideo');
+        const bgImage = document.getElementById('bgImage');
+        const music = document.getElementById('bgMusic');
 
         container.addEventListener('click', () => {
             if (container.classList.contains('open')) {
                 container.classList.remove('open');
                 container.classList.add('close');
 
-                // Pause video and fade out
-                video.style.opacity = '0';
-                setTimeout(() => video.pause(), 1000); // Pause after fade out
+                // Fade out background
+                bgImage.style.opacity = '0';
+                setTimeout(() => {
+                    music.pause();
+                    music.currentTime = 0;
+                }, 1000);
 
                 // Reset card to default state
                 document.querySelector('.card').classList.remove('flipped');
@@ -499,21 +505,18 @@
                 // Reset flip state
                 document.querySelector('.card').classList.remove('flipped');
 
-                // Play video and fade in
-                video.currentTime = 0;
-                video.volume = 0.2; // Note: iOS ignores this and uses hardware volume
-                video.muted = false;
+                // Fade in background
+                bgImage.style.opacity = '1';
 
-                var promise = video.play();
-                if (promise !== undefined) {
-                    promise.then(_ => {
-                        // playback started
-                        video.volume = 0.2; // Try setting again after start
-                    }).catch(error => {
-                        console.log("Auto-play was prevented:", error);
+                // Play music
+                music.currentTime = 0;
+                music.volume = 0.5;
+                var musicPromise = music.play();
+                if (musicPromise !== undefined) {
+                    musicPromise.catch(error => {
+                        console.log("Music auto-play was prevented:", error);
                     });
                 }
-                video.style.opacity = '1';
             }
 
             const instruction = document.querySelector('.instruction');
